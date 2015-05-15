@@ -1,2 +1,2 @@
 # splines
-Tests with spline functions
+Tests with spline functions.
