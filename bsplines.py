@@ -39,7 +39,7 @@ x = np.linspace(0, 10, 1000)
 ## polynomial degree
 p = 2
 ## inner spline knots
-t = np.array([2, 3, 4, 5, 6])
+t = np.array([0, 2, 3, 4, 5, 7, 10])
 ## p extra outer knots on every side to fullfill sum=1 condition.
 pre = np.zeros(p)
 post = np.zeros(p)
@@ -59,7 +59,7 @@ c = np.ones(len(t)-p-1)
 ## plot knot positions
 yl = 0
 yu = 1.5
-plt.plot(t, np.zeros_like(t), "o", label="ti")
+plt.plot(t, np.zeros_like(t), "o", label="knots")
 plt.vlines(t, yl, yu)
 ## plot all basis functions
 y = np.zeros((len(t)-p-1, len(x)))
