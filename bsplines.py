@@ -15,14 +15,16 @@ def bspline(x, i, p, t):
 	"""
 	x = np.array(x, copy=False, ndmin=1)
 	y = np.zeros_like(x)
-	# Recursion start:
+	# If degree 0, recursion start is reached
 	if p == 0:
 		# ith basis function is zero everywhere except in [ti,ti+1[
 		mask = (x>=t[i]) & (x<t[i+1])
 		y[mask] = 1
+	# Else do a recursion step
 	else:
 		c1 = 0
 		c2 = 0
+		# make sure the denominators are nonzero. if not set ci to zero.
 		den = t[i+p] - t[i]
 		if den != 0:
 			c1 = (x - t[i]) / den
@@ -37,7 +39,7 @@ def bspline(x, i, p, t):
 ## points for function drawing
 x = np.linspace(0, 10, 1000)
 ## polynomial degree
-p = 2
+p = 3
 ## inner spline knots
 t = np.array([0, 2, 3, 4, 5, 7, 10])
 ## p extra outer knots on every side to fullfill sum=1 condition.
@@ -52,7 +54,9 @@ post.fill(t[-1])
 # 	post[i] = t[-1] + (t[-1] - t[-(i+2)])
 t = np.concatenate((pre, t, post))
 print t
-## Coefficient array for every spline. Default is np.ones(len(t)-p-1).
+## Coefficient array for every spline. Default is np.ones(len(t)-p-1), as there
+## are len(t)-p-1 basis function with equal weight 1. The length of t is
+## counted with the outer knots included.
 c = np.ones(len(t)-p-1)
 # c = 1 + 0.1 * np.random.normal(0,1,len(t)-p-1)
 
