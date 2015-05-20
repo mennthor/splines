@@ -45,15 +45,13 @@ t = np.array([3,4,5,6,7,8])
 # t = np.array([0, 2, 3, 4, 5, 7, 10])
 ## p extra outer knots on every side to fullfill sum=1 condition inside all inner knots.
 nouter = p
-mirror = False
+mirror = True
 pre = np.zeros(nouter)
 post = np.zeros(nouter)
 if mirror:
-	# Mirror internal knots at t0, tn-1
-	for i in range(nouter):
-		pre[i] = t[0] - (t[i+1] - t[0])
-		post[i] = t[-1] + (t[-1] - t[-(i+2)])
-	pre = pre[::-1]
+	# Mirror internal knots at t0, tn-1 and make sure pre, post are sorted ascending
+	pre = ( t[0] - (t[1:nouter+1] - t[0]) )[::-1]
+	post = ( t[-1] + (t[-1] - t[-nouter-1:-1]) )[::-1]
 else:
 	# Just repeat the outermost knots p times each
 	pre.fill(t[0])
