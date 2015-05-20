@@ -37,23 +37,31 @@ def bspline(x, i, p, t):
 
 
 ## points for function drawing
-x = np.linspace(0, 10, 1000)
+x = np.linspace(-1, 12, 1000)
 ## polynomial degree
 p = 3
 ## inner spline knots
-t = np.array([0, 2, 3, 4, 5, 7, 10])
-## p extra outer knots on every side to fullfill sum=1 condition.
-pre = np.zeros(p)
-post = np.zeros(p)
-# just repeat the outermost knots p times each
-pre.fill(t[0])
-post.fill(t[-1])
-# alternative: mirror internal knots at t0, tn-1
-# for i in range(p):
-# 	pre[i] = t[0] - (t[p-i] - t[0])
-# 	post[i] = t[-1] + (t[-1] - t[-(i+2)])
+t = np.array([3,4,5,6,7,8])
+# t = np.array([0, 2, 3, 4, 5, 7, 10])
+## p extra outer knots on every side to fullfill sum=1 condition inside all inner knots.
+nouter = p
+mirror = False
+pre = np.zeros(nouter)
+post = np.zeros(nouter)
+if mirror:
+	# Mirror internal knots at t0, tn-1
+	for i in range(nouter):
+		pre[i] = t[0] - (t[i+1] - t[0])
+		post[i] = t[-1] + (t[-1] - t[-(i+2)])
+	pre = pre[::-1]
+else:
+	# Just repeat the outermost knots p times each
+	pre.fill(t[0])
+	post.fill(t[-1])
+
 t = np.concatenate((pre, t, post))
 print t
+
 ## Coefficient array for every spline. Default is np.ones(len(t)-p-1), as there
 ## are len(t)-p-1 basis function with equal weight 1. The length of t is
 ## counted with the outer knots included.
@@ -61,10 +69,12 @@ c = np.ones(len(t)-p-1)
 # c = 1 + 0.1 * np.random.normal(0,1,len(t)-p-1)
 
 ## plot knot positions
-yl = 0
+yl = -0.2
 yu = 1.5
-plt.plot(t, np.zeros_like(t), "o", label="knots")
-plt.vlines(t, yl, yu)
+plt.plot(t[nouter:-nouter], np.zeros_like(t[nouter:-nouter]), "o", color="red", label="inner knots")
+plt.plot(t[:nouter], -np.arange(1, 4)[::-1]*0.02, "o", color="green", label="outer knots")
+plt.plot(t[-nouter:], -np.arange(1, 4)*0.02, "o", color="green")
+plt.vlines(t, yl, yu, color="k", linestyles="dashed", alpha=0.5)
 ## plot all basis functions
 y = np.zeros((len(t)-p-1, len(x)))
 for i in range(len(t)-p-1):
@@ -74,7 +84,7 @@ for i in range(len(t)-p-1):
 plt.plot(x, np.sum(y, axis=0), 'k', lw=2, label="sum", alpha=.5)
 
 plt.legend(loc="best")
-plt.xlim(-1, 11)
+plt.xlim(-1, 12)
 plt.ylim(yl, yu)
 plt.show()
 
