@@ -45,13 +45,13 @@ t = np.array([3,4,5,6,7,8])
 # t = np.array([0, 2, 3, 4, 5, 7, 10])
 ## p extra outer knots on every side to fullfill sum=1 condition inside all inner knots.
 nouter = p
-mirror = True
+extend = False
 pre = np.zeros(nouter)
 post = np.zeros(nouter)
-if mirror:
-	# Mirror internal knots at t0, tn-1 and make sure pre, post are sorted ascending
-	pre = ( t[0] - (t[1:nouter+1] - t[0]) )[::-1]
-	post = ( t[-1] + (t[-1] - t[-nouter-1:-1]) )[::-1]
+if extend:
+	# Extend internal knot t1 at t0 and tn-1 at tn, with increasing distance t1-t0, tn-tn-1 times spline_deg
+	pre = [(t[0] - (i+1)*(t[1]-t[0])) for i in range(nouter)  ][::-1]
+	post = [(t[-1] + (i+1)*(t[-1]-t[-2])) for i in range(nouter)]
 else:
 	# Just repeat the outermost knots p times each
 	pre.fill(t[0])
