@@ -45,7 +45,7 @@ t = np.array([3,4,5,6,7,8])
 # t = np.array([0, 2, 3, 4, 5, 7, 10])
 ## p extra outer knots on every side to fullfill sum=1 condition inside all inner knots.
 nouter = p
-extend = False
+extend = True
 pre = np.zeros(nouter)
 post = np.zeros(nouter)
 if extend:
